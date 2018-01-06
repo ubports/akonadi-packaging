@@ -1,0 +1,4 @@
+usr/include/KF5/akonadi/
+usr/lib/*/cmake/KF5AkonadiServer/
+usr/lib/*/libKF5AkonadiPrivate.so
+usr/share/dbus-1/interfaces/

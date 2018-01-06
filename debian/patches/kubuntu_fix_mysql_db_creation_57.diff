@@ -1,0 +1,40 @@
+Description: Fix MySQL DB creation
+ 1) The --force parameter has been removed in 5.7, so use --insecure and
+    --basedir to keep the behavior
+ 2) The current DB init scripts get rejected by 5.7's stricter default mode.
+    So to keep it working for now set sql_mode=NO_ENGINE_SUBSTITUTION
+    which was the default value in 5.6
+ (Thanks to Lars Tangvald for the patches)
+Origin: vendor
+Bug-Ubuntu: https://bugs.launchpad.net/ubuntu/+source/akonadi/+bug/1572100
+Forwarded: https://bugs.kde.org/show_bug.cgi?id=361485
+Author: Philip Muskovac <yofel@gmx.net>
+Updated: 2016-04-20
+Index: b/src/server/storage/dbconfigmysql.cpp
+===================================================================
+--- a/src/server/storage/dbconfigmysql.cpp
++++ b/src/server/storage/dbconfigmysql.cpp
+@@ -285,7 +285,7 @@ bool DbConfigMysql::startInternalServer(
+     // first run, some MySQL versions need a mysql_install_db run for that
+     const QString confFile = XdgBaseDirs::findResourceFile("config", QStringLiteral("akonadi/mysql-global.conf"));
+     if (QDir(dataDir).entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty() && !mMysqlInstallDbPath.isEmpty()) {
+-        const QStringList arguments = QStringList() << QStringLiteral("--force") << QStringLiteral("--defaults-file=%1").arg(confFile) << QStringLiteral("--datadir=%1/").arg(dataDir);
++        const QStringList arguments = QStringList() << QStringLiteral("--defaults-file=%1").arg(confFile) << QStringLiteral("--insecure") << QStringLiteral("--basedir=/usr") << QStringLiteral("--datadir=%1/").arg(dataDir);
+         QProcess::execute(mMysqlInstallDbPath, arguments);
+     }
+ 
+Index: b/src/server/storage/mysql-global.conf
+===================================================================
+--- a/src/server/storage/mysql-global.conf
++++ b/src/server/storage/mysql-global.conf
+@@ -104,5 +104,10 @@ key_buffer_size=16K
+ # Unset the export dir check as only the full mysql-server package creates it
+ secure_file_priv=
+ 
++# KUBUNTU:
++# workaround for 5.7 being more strict with column types
++# (reverts to 5.6 behavior)
++sql_mode=NO_ENGINE_SUBSTITUTION
++
+ [client]
+ default-character-set=utf8

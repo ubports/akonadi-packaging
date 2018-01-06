@@ -1,0 +1,4 @@
+debian/mysqld-akonadi /usr/sbin
+debian/usr.sbin.mysqld-akonadi /etc/apparmor.d
+etc/xdg/akonadi/mysql-global-mobile.conf
+etc/xdg/akonadi/mysql-global.conf

@@ -1,0 +1,26 @@
+Description: disable the secure_file_priv check
+ MySQL 5.7 introduced a premission check for export and import operations.
+ In Ubuntu, only the full mysql-server package creates the set system wide
+ directory causing mysqld-akonadi to error out on startup if only
+ mysql-server-core-5.7 is installed.
+ To prevent that the key is set to empty, which reverts mysqld to the 5.6
+ behavior.
+ See http://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_secure_file_priv
+Author: Philip Muskovac <yofel@gmx.net>
+Last-Update: 2016-04-18
+Forwarded: not-needed
+Origin: vendor
+Index: b/src/server/storage/mysql-global.conf
+===================================================================
+--- a/src/server/storage/mysql-global.conf
++++ b/src/server/storage/mysql-global.conf
+@@ -100,5 +100,9 @@ wait_timeout=31536000
+ # We use InnoDB, so don't let MyISAM eat up memory
+ key_buffer_size=16K
+ 
++# KUBUNTU:
++# Unset the export dir check as only the full mysql-server package creates it
++secure_file_priv=
++
+ [client]
+ default-character-set=utf8

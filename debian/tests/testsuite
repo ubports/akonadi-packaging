@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p ${ADTTMP}/home
+HOME=${ADTTMP}/home xvfb-run -a dbus-launch --exit-with-session dh_auto_test

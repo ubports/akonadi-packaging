@@ -1,0 +1,18 @@
+Last-Update: 2015-07-14
+Forwarded: no
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=791807
+Author: Dmitry Smirnov <onlyjob@member.fsf.org>
+Description: initialise PSQL database with "--data-checksums".
+
+Index: b/src/server/storage/dbconfigpostgresql.cpp
+===================================================================
+--- a/src/server/storage/dbconfigpostgresql.cpp
++++ b/src/server/storage/dbconfigpostgresql.cpp
+@@ -224,6 +224,7 @@ bool DbConfigPostgresql::startInternalSe
+         QStringList arguments;
+         arguments << QStringLiteral("--pgdata=%2").arg(mPgData)
+                   // TODO check locale
++                  << QStringLiteral("--data-checksums")
+                   << QStringLiteral("--locale=en_US.UTF-8");
+         QProcess::execute(command, arguments);
+     }
